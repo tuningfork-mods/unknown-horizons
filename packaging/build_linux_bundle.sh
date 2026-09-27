@@ -61,6 +61,16 @@ for name in os.listdir(os.path.join(repo, 'po', 'uh')):
 print('compiled %d translation catalogs' % count)
 EOF
 
+# stamp the release version so the in-game menu shows it (no .git ships in the bundle)
+RELEASE_VER="${UH_RELEASE_VER:-2026.2}"
+printf '%s' "$RELEASE_VER" > "$STAGE/content/packages/gitversion.txt"
+
+# vendored pure-python deps the engine needs (e.g. `future` for FIFE's
+# py2/3 compat shims) — no pip needed on player machines
+if [ -d "$REPO/packaging/vendor" ]; then
+	cp -r "$REPO"/packaging/vendor/* "$STAGE/"
+fi
+
 # cleanup
 find "$STAGE" -name "__pycache__" -type d -prune -exec rm -rf {} + 2>/dev/null || true
 find "$STAGE" -name "*.pyc" -delete
