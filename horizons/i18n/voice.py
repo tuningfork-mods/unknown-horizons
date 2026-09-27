@@ -20,6 +20,7 @@
 # ###################################################
 
 import glob
+import logging
 import os.path
 from random import randrange
 from typing import Optional
@@ -31,6 +32,8 @@ from horizons.constants import PATHS
 """
 Internationalization for speech|voice files
 """
+
+log = logging.getLogger("i18n.voice")
 
 
 class Speech:
@@ -87,7 +90,8 @@ def get_speech_file(category, variation_id=None, speaker_id=DEFAULT_SPEAKER):
 	lang = horizons.globals.fife.get_locale()
 	path = prepare_path(lang, category_name, variation_id, speaker_id)
 	if path is None:
-		path = prepare_path(DEFAULT_LANG, category_name, DEFAULT_VARIATION, DEFAULT_SPEAKER)
+		# fall back to english, keeping the requested variation and speaker
+		path = prepare_path(DEFAULT_LANG, category_name, variation_id, speaker_id)
 	return path
 
 
@@ -127,7 +131,8 @@ def eval_category_name(category):
 	cat_name = None
 	try:
 		cat_name = getattr(Speech, category)
-	except:
-		print("Incorrect name of speech category: {}".format(category))
-		print("You might want to add this here in voice.py.")
+	except AttributeError:
+		# Most message ids have no voice category; that is normal, so only
+		# log it instead of printing to stdout on every such message.
+		log.debug("No speech category %s (you might want to add it in voice.py)", category)
 	return cat_name
