@@ -18,3 +18,18 @@
 # Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 # ###################################################
+
+# Compatibility shims for FIFE 0.4.2 SWIG bindings, which don't export
+# some typedef names the game expects. These aliases point at the exact
+# same underlying C++ types.
+try:
+	from fife import fife as _fife_module
+	if not hasattr(_fife_module, 'ScreenPoint'):
+		# C++: typedef Point3D ScreenPoint
+		_fife_module.ScreenPoint = _fife_module.Point3D
+	if not hasattr(_fife_module, 'AudioSpaceCoordinate'):
+		# C++: %template(AudioSpaceCoordinate) PointType3D<double>
+		# (dropped by SWIG as duplicate of ExactModelCoordinate)
+		_fife_module.AudioSpaceCoordinate = _fife_module.DoublePoint3D
+except ImportError:
+	pass
