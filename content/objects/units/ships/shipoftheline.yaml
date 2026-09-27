@@ -1,0 +1,23 @@
+baseclass: shipoftheline.ShipOfTheLine
+id: UNITS.SHIP_OF_THE_LINE
+name: Ship of the Line
+radius: 6
+velocity: 9.0
+components:
+- SelectableComponent:
+    type: ship
+    tabs: [FightingShipOverviewTab, TradeTab]
+    enemy_tabs: [EnemyShipOverviewTab,]
+- AmbientSoundComponent
+- StorageComponent:
+      PositiveTotalNumSlotsStorage:
+         limit: 160
+         slotnum: 4
+- ShipNameComponent
+- HealthComponent:
+   maxhealth: 400
+- CommandableComponent
+
+actionsets:
+ TIER.SAILORS:
+   as_shipoftheline0:

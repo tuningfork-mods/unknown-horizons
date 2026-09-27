@@ -300,8 +300,8 @@ INSERT INTO "resource" VALUES(65, 'rough gems',     15,     0,    0); -- unused
 INSERT INTO "resource" VALUES(66, 'gems',           50,     0,    0); -- unused
 --                            id   name            value  trade  show_inv
 INSERT INTO "resource" VALUES(70, 'coffee plants',   2,     0,    0); -- unused
-INSERT INTO "resource" VALUES(71, 'coffee beans',    2.5,   0,    0); -- unused
-INSERT INTO "resource" VALUES(72, 'coffee',         10,     0,    0); -- unused
+INSERT INTO "resource" VALUES(71, 'coffee beans',    2.5,   0,    1);
+INSERT INTO "resource" VALUES(72, 'coffee',         10,     1,    1);
 INSERT INTO "resource" VALUES(73, 'tea plants',      2,     0,    0); -- unused
 INSERT INTO "resource" VALUES(74, 'tea leaves',      2.5,   0,    0); -- unused
 INSERT INTO "resource" VALUES(75, 'tea',            10,     0,    0); -- unused
@@ -314,10 +314,10 @@ INSERT INTO "resource" VALUES(80, 'whales',         10,     0,    0); -- unused 
 INSERT INTO "resource" VALUES(81, 'ambergris',      10,     0,    0); -- unused -- (solid, waxy, flammable, dull grey)
 INSERT INTO "resource" VALUES(82, 'lamp oil',       10,     0,    0); -- unused -- (via blubber)
 INSERT INTO "resource" VALUES(83, 'cotton plants',   2,     0,    0); -- unused -- (called gossypium)
-INSERT INTO "resource" VALUES(84, 'cotton',          2.5,   0,    0); -- unused -- (fibers)
+INSERT INTO "resource" VALUES(84, 'cotton',          2.5,   0,    1); -- (fibers)
 INSERT INTO "resource" VALUES(85, 'indigo plants' ,  2,     0,    0); -- unused -- (called indigofera)
 INSERT INTO "resource" VALUES(86, 'indigo',          5,     0,    0); -- unused
-INSERT INTO "resource" VALUES(87, 'garments',       20,     0,    0); -- unused
+INSERT INTO "resource" VALUES(87, 'garments',       20,     1,    1);
 INSERT INTO "resource" VALUES(88, 'perfume',        20,     0,    0); -- unused
 INSERT INTO "resource" VALUES(89, 'hop plants',      2,     0,    0);
 --                            id   name            value  trade  show_inv
@@ -330,7 +330,7 @@ INSERT INTO "resource" VALUES(91, 'beer',            6.5,   1,    1);
 -- mortars, [swords maces muskets spears arbalests]
 --                            id   name            value  trade  show_inv
 INSERT INTO "resource" VALUES(96, 'hygiene',        NULL,   0,    0); -- (public bath)
-INSERT INTO "resource" VALUES(97, 'recreation',     NULL,   0,    0); -- (for aesthetics)
+INSERT INTO "resource" VALUES(97, 'recreation',     NULL,   0,    0); -- (theatre)
 INSERT INTO "resource" VALUES(98, 'blackdeath',     NULL,   0,    0); -- (doctor)
 INSERT INTO "resource" VALUES(99, 'fire',           NULL,   0,    0); -- (fire service)
 -- "unused": not used by game code currently, thus made untradable and hidden from inventories

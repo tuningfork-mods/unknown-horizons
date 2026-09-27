@@ -77,6 +77,7 @@ class BUILDING_PURPOSE:
 	HERBARY = 33
 	STONE_PIT = 34
 	STONEMASON = 35
+	WOODEN_TOWER = 36
 
 	purpose_to_building = {} # type: Dict[int, int]
 	building_to_purpose = {} # type: Dict[int, int]
@@ -116,6 +117,7 @@ class BUILDING_PURPOSE:
 		cls.purpose_to_building[cls.HERBARY] = BUILDINGS.HERBARY
 		cls.purpose_to_building[cls.STONE_PIT] = BUILDINGS.STONE_PIT
 		cls.purpose_to_building[cls.STONEMASON] = BUILDINGS.STONEMASON
+		cls.purpose_to_building[cls.WOODEN_TOWER] = BUILDINGS.WOODEN_TOWER
 
 		for purpose, building_id in cls.purpose_to_building.items():
 			cls.building_to_purpose[building_id] = purpose

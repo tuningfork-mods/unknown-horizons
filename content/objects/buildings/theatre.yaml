@@ -1,0 +1,33 @@
+id: BUILDINGS.THEATRE
+name: _ Theatre
+baseclass: production.ProductionBuilding
+radius: 0
+cost: 30
+cost_inactive: 10
+size_x: 3
+size_y: 3
+inhabitants: 6
+tooltip_text: _ Provides recreation for aristocrats.
+tier: TIER.ARISTOCRATS
+buildingcosts: {RES.GOLD: 1500, RES.BOARDS: 8, RES.BRICKS: 8, RES.TOOLS: 4}
+show_status_icons: false
+components:
+- SelectableComponent:
+    type: building
+    tabs: [ProductionOverviewTab]
+    enemy_tabs: [EnemyBuildingOverviewTab]
+- HealthComponent: {maxhealth: 1500}
+- ProducerComponent:
+    productionlines:
+      RECREATION:
+        produces:
+        - [RES.RECREATION, 1]
+        time: 4
+- StorageComponent:
+      SlotsStorage:
+        slot_sizes: {RES.RECREATION: 10}
+- AmbientSoundComponent:
+    soundfiles: [content/audio/sounds/chapel.ogg]
+actionsets:
+  TIER.ARISTOCRATS:
+    as_theatre0:

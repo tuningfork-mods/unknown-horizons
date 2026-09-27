@@ -23,6 +23,7 @@ import logging
 
 from horizons.ai.aiplayer.goal.boatbuilder import BoatBuilderGoal
 from horizons.ai.aiplayer.goal.combatship import CombatShipGoal
+from horizons.ai.aiplayer.goal.defense import DefenseGoal
 from horizons.ai.aiplayer.goal.depositcoverage import (
 	ClayDepositCoverageGoal, MountainCoverageGoal, StoneDepositCoverageGoal)
 from horizons.ai.aiplayer.goal.doctor import DoctorGoal
@@ -148,6 +149,7 @@ class SettlementManager(WorldObject):
 			self._goals.append(TentGoal(self))
 			self._goals.append(TradingShipGoal(self))
 			self._goals.append(CombatShipGoal(self))
+			self._goals.append(DefenseGoal(self))
 			self._goals.append(FireStationGoal(self))
 			self._goals.append(DoctorGoal(self))
 			self._goals.append(MedicalHerbsProductsGoal(self))

@@ -19,7 +19,7 @@ tab1:
   - BUILDINGS.FISHER
 - # forth row
   - _ Military
-#  - BUILDINGS.BARRIER # not implemented yet
+  - BUILDINGS.BARRIER
 
 tab2:
 - icon: icons/tabwidget/buildmenu/tier/tier2
@@ -40,7 +40,7 @@ tab2:
   - BUILDINGS.VILLAGE_SCHOOL
   - BUILDINGS.FIRE_STATION
   - BUILDINGS.BOAT_BUILDER
-#  - BUILDINGS.WOODEN_TOWER # not implemented yet
+  - BUILDINGS.WOODEN_TOWER
 
 tab3:
 - icon: icons/tabwidget/buildmenu/tier/tier3
@@ -91,9 +91,9 @@ tab4:
   - BUILDINGS.PIGSTY
 -
   - _ Military
-#  - BUILDINGS.WEAPONSMITH # not implemented yet
-#  - BUILDINGS.CANNON_FOUNDRY # not implemented yet 
-#  - BUILDINGS.BARRACKS # not implemented yet
+  - BUILDINGS.WEAPONSMITH
+  - BUILDINGS.CANNON_FOUNDRY
+  - BUILDINGS.BARRACKS
 
 tab5:
 - icon: icons/tabwidget/buildmenu/tier/tier5
@@ -109,6 +109,20 @@ tab5:
 #  - # empty slot
 #  - # empty slot
 #  - # empty slot
+
+tab6:
+- icon: icons/tabwidget/buildmenu/tier/tier6
+-
+  - _ Companies
+  - BUILDINGS.ROASTER
+  - BUILDINGS.TAILOR
+-
+  - _ Fields
+  - BUILDINGS.COFFEE_FIELD
+  - BUILDINGS.COTTON_FIELD
+-
+  - _ Services
+  - BUILDINGS.THEATRE
 
 meta:
   unlocking_strategy: tab_per_tier

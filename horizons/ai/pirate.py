@@ -29,7 +29,7 @@ from horizons.ai.aiplayer.strategy.strategymanager import PirateStrategyManager
 from horizons.ai.generic import GenericAI
 from horizons.command.unit import CreateUnit
 from horizons.component.selectablecomponent import SelectableComponent
-from horizons.constants import UNITS
+from horizons.constants import GAME, UNITS
 from horizons.ext.enum import Enum
 from horizons.scheduler import Scheduler
 from horizons.util.python.callback import Callback
@@ -52,7 +52,10 @@ class Pirate(GenericAI):
 	caught_ship_radius = 5
 	home_radius = 2
 
-	ship_count = 1
+	# pirate strength scales with game progress: an extra raider roughly every
+	# 30 game-months, up to a fleet of 4
+	extra_ship_month_interval = 30
+	max_ship_count = 4
 
 	tick_interval = 32
 	tick_long_interval = 128
@@ -68,8 +71,8 @@ class Pirate(GenericAI):
 		self.log.debug("Pirate: home at (%d, %d), radius %d", self.home_point.x, self.home_point.y, self.home_radius)
 		self.__init()
 
-		# create a ship and place it randomly (temporary hack)
-		for i in range(self.ship_count):
+		# create initial ships (temporary hack)
+		for i in range(self.get_target_ship_count()):
 			self.create_ship_at_random_position()
 
 		Scheduler().add_new_object(Callback(self.tick), self, 1, -1, self.tick_interval)
@@ -113,8 +116,15 @@ class Pirate(GenericAI):
 		self.ships[ship] = self.shipStates.idle
 		self.combat_manager.add_new_unit(ship)
 
+	def get_target_ship_count(self):
+		"""Pirate fleet grows as the game progresses: an extra raider roughly
+		every extra_ship_month_interval game-months, capped at max_ship_count."""
+		months_elapsed = Scheduler().cur_tick / GAME.INGAME_TICK_INTERVAL
+		extra = int(months_elapsed // self.extra_ship_month_interval)
+		return min(1 + extra, self.max_ship_count)
+
 	def maintain_ship_count(self):
-		if len(list(self.ships.keys())) < self.ship_count:
+		if len(list(self.ships.keys())) < self.get_target_ship_count():
 			self.create_ship_at_random_position()
 
 	def save(self, db):

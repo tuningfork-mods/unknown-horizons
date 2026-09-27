@@ -134,6 +134,7 @@ class UNITS:
 	USABLE_FISHER_BOAT   = 1000016
 
 	FRIGATE              = 1000020
+	SHIP_OF_THE_LINE     = 1000021
 
 	DISASTER_RECOVERY_COLLECTOR = 1000022
 
@@ -223,6 +224,12 @@ class BUILDINGS:
 
 	SALINE           = 86
 	PUBLIC_BATH      = 87
+
+	COFFEE_FIELD     = 88
+	ROASTER          = 89
+	COTTON_FIELD     = 90
+	TAILOR           = 91
+	THEATRE          = 92
 
 	EXPAND_RANGE = (WAREHOUSE, STORAGE, LOOKOUT)
 
@@ -320,9 +327,9 @@ class RES:
 	SILVER_DEPOSIT   = GOLD # 67
 	SILVER_ORE       = GOLD # 68
 	SILVER_INGOTS    = GOLD # 69
-	COFFEE_PLANTS    = GOLD # 70
-	COFFEE_BEANS     = GOLD # 71
-	COFFEE           = GOLD # 72
+	COFFEE_PLANTS    = 70
+	COFFEE_BEANS     = 71
+	COFFEE           = 72
 	TEA_PLANTS       = GOLD # 73
 	TEA_LEAVES       = GOLD # 74
 	TEA              = GOLD # 75
@@ -333,11 +340,11 @@ class RES:
 	WHALES           = GOLD # 80
 	AMBERGRIS        = GOLD # 81
 	LAMP_OIL         = GOLD # 82
-	COTTON_PLANTS    = GOLD # 83
-	COTTON           = GOLD # 84
+	COTTON_PLANTS    = 83
+	COTTON           = 84
 	INDIGO_PLANTS    = GOLD # 85
 	INDIGO           = GOLD # 86
-	GARMENTS         = GOLD # 87
+	GARMENTS         = 87
 	PERFUME          = GOLD # 88
 	HOP_PLANTS       = 89
 	HOPS             = 90
@@ -348,7 +355,7 @@ class RES:
 	FAITH_2          = GOLD # 94
 	EDUCATION_2      = GOLD # 95
 	HYGIENE          = 96
-	RECREATION       = GOLD # 97
+	RECREATION       = 97
 	BLACKDEATH       = 98
 	FIRE             = 99
 	# 92-99 reserved for services
@@ -453,6 +460,7 @@ class PRODUCTIONLINES:
 	# will get added later
 	FISHING_BOAT = None # type: ignore
 	FRIGATE = 58
+	SHIP_OF_THE_LINE = 59
 	TREES = 256812226
 	WOOL = 1654557398
 	SWORDSMAN = 1062345232
@@ -527,7 +535,7 @@ class TIER:
 
 	LOWEST = SAILORS
 	HIGHEST = ARISTOCRATS
-	CURRENT_MAX = MERCHANTS
+	CURRENT_MAX = ARISTOCRATS
 
 
 class SETTLER:

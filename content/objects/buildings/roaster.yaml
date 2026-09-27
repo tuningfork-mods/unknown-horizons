@@ -1,0 +1,35 @@
+id: BUILDINGS.ROASTER
+name: _ Coffee Roaster
+baseclass: production.ProductionBuilding
+radius: 8
+cost: 25
+cost_inactive: 10
+size_x: 2
+size_y: 2
+inhabitants: 3
+tooltip_text: _ Roasts coffee beans into coffee.
+tier: TIER.ARISTOCRATS
+buildingcosts: {RES.GOLD: 800, RES.BOARDS: 4, RES.BRICKS: 4, RES.TOOLS: 2}
+components:
+- SelectableComponent:
+    type: building
+    tabs: [SmallProductionOverviewTab,]
+    enemy_tabs: [EnemyBuildingOverviewTab,]
+- HealthComponent: {maxhealth: 1000}
+- ProducerComponent:
+    productionlines:
+      COFFEE:
+        produces:
+        - [RES.COFFEE, 1]
+        consumes:
+        - [RES.COFFEE_BEANS, -2]
+        time: 30
+- StorageComponent:
+      SlotsStorage:
+        slot_sizes: {RES.COFFEE_BEANS: 8, RES.COFFEE: 6}
+- CollectingComponent:
+    collectors:
+      UNITS.BUILDING_COLLECTOR: 1
+actionsets:
+  TIER.ARISTOCRATS:
+    as_roaster0:

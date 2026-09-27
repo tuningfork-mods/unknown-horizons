@@ -37,6 +37,16 @@ components:
         - [RES.TEXTILE, -6]
         - [RES.TOOLS, -2]
         time: 60
+      59:
+        produces:
+        - [UNITS.SHIP_OF_THE_LINE, 1]
+        consumes:
+        - [RES.GOLD, -1500]
+        - [RES.BOARDS, -20]
+        - [RES.CANNON, -12]
+        - [RES.TEXTILE, -8]
+        - [RES.TOOLS, -3]
+        time: 90
 - StorageComponent:
       SlotsStorage:
         slot_sizes: {RES.CANNON: 12, RES.TEXTILE: 12, RES.BOARDS: 12, RES.TOOLS: 12}

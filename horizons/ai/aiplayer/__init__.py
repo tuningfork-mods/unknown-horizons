@@ -67,6 +67,7 @@ from .building.toolmaker import AbstractToolmaker
 from .building.tree import AbstractTree
 from .building.villagebuilding import AbstractVillageBuilding
 from .building.weaver import AbstractWeaver
+from .building.woodentower import AbstractWoodenTower
 from .constants import GOAL_RESULT
 from .goal.donothing import DoNothingGoal
 from .goal.settlementgoal import SettlementGoal

@@ -32,10 +32,13 @@ class FightingShip(MovingWeaponHolder, Ship):
 	"""
 	health_bar_y = -190
 
+	# subclasses may override to carry more guns
+	num_weapons = WEAPONS.DEFAULT_FIGHTING_SHIP_WEAPONS_NUM
+
 	def __init__(self, x, y, **kwargs):
 		super().__init__(x=x, y=y, **kwargs)
 		# add default weapons
-		for i in range(WEAPONS.DEFAULT_FIGHTING_SHIP_WEAPONS_NUM):
+		for i in range(self.num_weapons):
 			self.add_weapon_to_storage(WEAPONS.CANNON)
 		print("Ship created and weapons loaded.")
 

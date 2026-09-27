@@ -51,12 +51,20 @@ class UnitBuilder:
 		self.log.info('%s started building trading ship', self)
 
 	def build_combat_ship(self):
-		"""Build a new frigate ship"""
+		"""Build a new combat ship: frigates first, then ships of the line as the fleet grows."""
+		from horizons.world.units.fightingship import FightingShip
+		num_combat_ships = sum(1 for ship in self.owner.ships if isinstance(ship, FightingShip))
+		if num_combat_ships >= 2:
+			production_line = PRODUCTIONLINES.SHIP_OF_THE_LINE
+			ship_name = 'ship of the line'
+		else:
+			production_line = PRODUCTIONLINES.FRIGATE
+			ship_name = 'frigate'
 		boat_builder = self._get_boat_builders()[0]
-		AddProduction(boat_builder.get_component(Producer), PRODUCTIONLINES.FRIGATE).execute(self.owner.session)
-		production = boat_builder.get_component(Producer)._get_production(PRODUCTIONLINES.FRIGATE)
+		AddProduction(boat_builder.get_component(Producer), production_line).execute(self.owner.session)
+		production = boat_builder.get_component(Producer)._get_production(production_line)
 		production.add_production_finished_listener(self._ship_built)
-		self.log.info('%s started building combat ship', self)
+		self.log.info('%s started building %s', self, ship_name)
 
 	def _ship_built(self, production):
 		"""Called when a new ship has been built."""

@@ -291,6 +291,14 @@ class DefaultPersonality:
 		residences_required = 0
 		min_tier = TIER.SAILORS
 
+	class DefenseGoal:
+		enabled = True
+		default_priority = 540
+		residences_required = 15
+		min_tier = TIER.PIONEERS
+		residences_per_tower = 25
+		max_towers = 4
+
 	class StorageSpaceGoal(ImproveCollectorCoverageGoal):
 		enabled = True
 		default_priority = 825
@@ -464,6 +472,9 @@ class DefaultPersonality:
 
 	class SignalFireEvaluator:
 		alignment_importance = 1.5 # the larger this value, the larger the effect of alignment on the placement
+
+	class WoodenTowerEvaluator:
+		spread_importance = 1.0 # the larger this value, the more towers spread out across the settlement
 
 	class SmelteryEvaluator:
 		alignment_importance = 0.02 # the larger this value, the larger the effect of alignment on the placement

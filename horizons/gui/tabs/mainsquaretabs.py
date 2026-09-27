@@ -260,3 +260,7 @@ class MainSquareCitizensTab(MainSquareSettlerLevelTab):
 
 class MainSquareMerchantsTab(MainSquareSettlerLevelTab):
 	LEVEL = TIER.MERCHANTS
+
+
+class MainSquareAristocratsTab(MainSquareSettlerLevelTab):
+	LEVEL = TIER.ARISTOCRATS
