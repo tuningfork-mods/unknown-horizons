@@ -343,15 +343,23 @@ def setup_fife():
 			exit_with_error('Failed to load module fife', 'Below directory paths were tested:\n' + directories)
 
 	from fife import fife
-	fife_version_major = fife.get_major() if hasattr(fife, 'get_major') else 'unknown'
-	fife_version_minor = fife.get_minor() if hasattr(fife, 'get_minor') else 'unknown'
-	fife_version_patch = fife.get_patch() if hasattr(fife, 'get_patch') else 'unknown'
+	# FIFE 0.4.x exposes getMajor/getMinor/getPatch; older snapshots used get_major etc.
+	if hasattr(fife, 'getMajor'):
+		fife_version = (fife.getMajor(), fife.getMinor(), fife.getPatch())
+	elif hasattr(fife, 'get_major'):
+		fife_version = (fife.get_major(), fife.get_minor(), fife.get_patch())
+	else:
+		fife_version = None
 
 	from horizons.constants import VERSION
-	if (fife_version_major, fife_version_minor, fife_version_patch) < VERSION.REQUIRED_FIFE_VERSION:
-		logger.warning('Unsupported fife version %s.%s.%s, at least %d.%d.%d required', fife_version_major, fife_version_minor, fife_version_patch, VERSION.REQUIRED_FIFE_MAJOR_VERSION, VERSION.REQUIRED_FIFE_MINOR_VERSION, VERSION.REQUIRED_FIFE_PATCH_VERSION)
+	if fife_version is None:
+		logger.warning('Could not determine fife version, at least %d.%d.%d required',
+		               VERSION.REQUIRED_FIFE_MAJOR_VERSION, VERSION.REQUIRED_FIFE_MINOR_VERSION,
+		               VERSION.REQUIRED_FIFE_PATCH_VERSION)
+	elif fife_version < VERSION.REQUIRED_FIFE_VERSION:
+		logger.warning('Unsupported fife version %s.%s.%s, at least %d.%d.%d required', fife_version[0], fife_version[1], fife_version[2], VERSION.REQUIRED_FIFE_MAJOR_VERSION, VERSION.REQUIRED_FIFE_MINOR_VERSION, VERSION.REQUIRED_FIFE_PATCH_VERSION)
 	else:
-		logger.debug('Using fife version %s.%s.%s, at least %d.%d.%d required', fife_version_major, fife_version_minor, fife_version_patch, VERSION.REQUIRED_FIFE_MAJOR_VERSION, VERSION.REQUIRED_FIFE_MINOR_VERSION, VERSION.REQUIRED_FIFE_PATCH_VERSION)
+		logger.debug('Using fife version %s.%s.%s, at least %d.%d.%d required', fife_version[0], fife_version[1], fife_version[2], VERSION.REQUIRED_FIFE_MAJOR_VERSION, VERSION.REQUIRED_FIFE_MINOR_VERSION, VERSION.REQUIRED_FIFE_PATCH_VERSION)
 
 
 def init_environment(use_fife):

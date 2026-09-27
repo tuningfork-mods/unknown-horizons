@@ -31,5 +31,11 @@ try:
 		# C++: %template(AudioSpaceCoordinate) PointType3D<double>
 		# (dropped by SWIG as duplicate of ExactModelCoordinate)
 		_fife_module.AudioSpaceCoordinate = _fife_module.DoublePoint3D
+	if not hasattr(_fife_module, 'ExactModelCoordinate'):
+		# C++: typedef DoublePoint3D ExactModelCoordinate (modelcoords.h)
+		_fife_module.ExactModelCoordinate = _fife_module.DoublePoint3D
+	if not hasattr(_fife_module, 'ModelCoordinate'):
+		# C++: typedef Point3D ModelCoordinate (modelcoords.h)
+		_fife_module.ModelCoordinate = _fife_module.Point3D
 except ImportError:
 	pass
