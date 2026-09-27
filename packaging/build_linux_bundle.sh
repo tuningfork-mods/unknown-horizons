@@ -20,10 +20,19 @@ cp "$REPO/packaging/README.txt" "$STAGE/README.txt"
 chmod +x "$STAGE/UnknownHorizons.sh"
 
 # vendored FIFE engine (built 0.4.2, python3.12)
-cp -r /usr/lib/python3/dist-packages/fife "$STAGE/"
+# FIFE_DIR may point at the engine/python/fife source tree plus compiled _fife.so/_fifechan.so
+FIFE_SRC="${FIFE_DIR:-/usr/lib/python3/dist-packages/fife}"
+if [ -d "$FIFE_SRC" ] && [ ! -f "$FIFE_SRC/_fife.so" ] && [ -n "$FIFE_BUILD_DIR" ]; then
+  mkdir -p /tmp/uh_fife_pkg/fife
+  cp -r "$FIFE_SRC"/. /tmp/uh_fife_pkg/fife/
+  cp "$FIFE_BUILD_DIR"/_fife.so "$FIFE_BUILD_DIR"/_fifechan.so "$FIFE_BUILD_DIR"/fife.py "$FIFE_BUILD_DIR"/fifechan.py /tmp/uh_fife_pkg/fife/
+  FIFE_SRC=/tmp/uh_fife_pkg/fife
+fi
+cp -r "$FIFE_SRC" "$STAGE/fife"
 
 # vendored fifechan libs (not present on player machines)
-for d in /lib /usr/lib/x86_64-linux-gnu /usr/lib; do
+FIFECHAN_SEARCH="${FIFECHAN_LIB_DIR:-} /lib /usr/lib/x86_64-linux-gnu /usr/lib"
+for d in $FIFECHAN_SEARCH; do
 	for f in "$d"/libfifechan*.so*; do
 		[ -e "$f" ] && cp -P "$f" "$STAGE/lib/"
 	done
