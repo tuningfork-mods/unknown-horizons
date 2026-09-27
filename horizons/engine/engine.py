@@ -22,13 +22,14 @@
 
 import locale
 import logging
+import os
 
 from fife import fife
 from fife.extensions import fifelog, pychan
 
 from horizons.constants import LANGUAGENAMES, PATHS, SETTINGS
 from horizons.engine.pychan_util import init_pychan
-from horizons.engine.settings import Settings
+from horizons.engine.settings import Settings, detect_display_resolution
 from horizons.engine.sound import Sound
 from horizons.util.loaders.sqliteanimationloader import SQLiteAnimationLoader
 from horizons.util.loaders.sqliteatlasloader import SQLiteAtlasLoader
@@ -43,12 +44,17 @@ class Fife:
 	def __init__(self):
 		self.pump = []
 
-		self._setting = Settings(PATHS.USER_CONFIG_FILE, PATHS.SETTINGS_TEMPLATE_FILE)
+		settings_file = PATHS.USER_CONFIG_FILE
+		# Issue #1568: the Settings object below creates the settings file if
+		# it does not exist yet, so "first run" has to be determined beforehand.
+		self._first_run = not os.path.exists(settings_file)
+		self._setting = Settings(settings_file, PATHS.SETTINGS_TEMPLATE_FILE)
 		self.engine = fife.Engine()
 		self.engine_settings = self.engine.getSettings()
 
 		self.init_logging()
 		self.load_settings()
+		self.maybe_autodetect_resolution()
 
 		self.pychan = pychan
 
@@ -130,6 +136,26 @@ class Fife:
 			self.engine_settings.setMouseAccelerationEnabled(self._finalSetting['MouseAcceleration'])
 		except:
 			pass
+
+	def maybe_autodetect_resolution(self):
+		"""Auto-detect the desktop resolution on first game start.
+
+		https://github.com/unknown-horizons/unknown-horizons/issues/1568
+		This only runs once: on subsequent starts the settings file exists,
+		either still holding the detected value or one the user changed, and
+		redetecting would interfere with user settings.
+		"""
+		if not self._first_run:
+			return
+		detected = detect_display_resolution()
+		if detected is None:
+			self.log.info('Could not detect desktop resolution, keeping default')
+			return
+		width, height = detected
+		resolution = '{}x{}'.format(width, height)
+		self.log.info('Auto-detected desktop resolution: %s', resolution)
+		self.set_fife_setting('ScreenResolution', resolution)
+		self.save_settings()
 
 	def init_logging(self):
 		"""Initialize the LogManager."""

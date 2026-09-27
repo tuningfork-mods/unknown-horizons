@@ -123,3 +123,57 @@ class Settings:
 
 	def set_unknownhorizons_Language(self, value):
 		return LANGUAGENAMES.get_by_value(value)
+
+
+def detect_display_resolution():
+	"""Best-effort detection of the desktop resolution.
+
+	Used to pick a sensible default screen resolution on first game start
+	(https://github.com/unknown-horizons/unknown-horizons/issues/1568).
+	The desktop resolution is the best guess for user preference we have.
+
+	@return: (width, height) tuple, or None if detection is not possible.
+	"""
+	# SDL2 is the most reliable source: FIFE itself is built on it, so it is
+	# guaranteed to be available wherever the game runs.
+	try:
+		from ctypes import CDLL, Structure, byref, c_int, c_uint32, c_void_p
+		from ctypes.util import find_library
+
+		class SDL_DisplayMode(Structure):
+			_fields_ = [('format', c_uint32),
+			            ('w', c_int),
+			            ('h', c_int),
+			            ('refresh_rate', c_int),
+			            ('driverdata', c_void_p)]
+
+		SDL_INIT_VIDEO = 0x20
+		libname = find_library('SDL2')
+		if libname:
+			sdl = CDLL(libname)
+			# SDL init calls are reference counted, so initializing the video
+			# subsystem here does not interfere with the engine init later.
+			if sdl.SDL_InitSubSystem(SDL_INIT_VIDEO) == 0:
+				try:
+					mode = SDL_DisplayMode()
+					if sdl.SDL_GetDesktopDisplayMode(0, byref(mode)) == 0:
+						if mode.w > 0 and mode.h > 0:
+							return (mode.w, mode.h)
+				finally:
+					sdl.SDL_QuitSubSystem(SDL_INIT_VIDEO)
+	except Exception:
+		pass
+
+	# Fallback: tkinter ships with most desktop Python installs.
+	try:
+		import tkinter
+		root = tkinter.Tk()
+		root.withdraw()
+		width, height = root.winfo_screenwidth(), root.winfo_screenheight()
+		root.destroy()
+		if width > 0 and height > 0:
+			return (width, height)
+	except Exception:
+		pass
+
+	return None
