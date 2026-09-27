@@ -155,6 +155,11 @@ class Fife:
 		resolution = '{}x{}'.format(width, height)
 		self.log.info('Auto-detected desktop resolution: %s', resolution)
 		self.set_fife_setting('ScreenResolution', resolution)
+		# load_settings() already pushed the default resolution to the live
+		# engine, so apply the detected size there too; without this the
+		# detected resolution would only take effect on the *second* start.
+		self.engine_settings.setScreenWidth(width)
+		self.engine_settings.setScreenHeight(height)
 		self.save_settings()
 
 	def init_logging(self):

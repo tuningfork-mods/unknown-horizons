@@ -48,7 +48,27 @@ def make_fife(first_run=True):
 	fife = engine_module.Fife.__new__(engine_module.Fife)
 	fife._setting = FakeSettings()
 	fife._first_run = first_run
+	fife.engine_settings = FakeEngineSettings()
+	fife.log = FakeLog()
 	return fife
+
+
+class FakeEngineSettings:
+	"""Records the live engine settings the resolution is applied to."""
+	def __init__(self):
+		self.width = None
+		self.height = None
+
+	def setScreenWidth(self, width):
+		self.width = width
+
+	def setScreenHeight(self, height):
+		self.height = height
+
+
+class FakeLog:
+	def info(self, *args):
+		pass
 
 
 def test_1568_detect_display_resolution_is_safe():
@@ -71,6 +91,10 @@ def test_1568_first_run_applies_detected_resolution():
 
 	assert fife._setting.values[(SETTINGS.FIFE_MODULE, 'ScreenResolution')] == '1920x1080'
 	assert fife._setting.saved
+	# the live engine gets the detected size too, so it applies on this
+	# very first start instead of only the second one
+	assert fife.engine_settings.width == 1920
+	assert fife.engine_settings.height == 1080
 
 
 def test_1568_failed_detection_keeps_default():
