@@ -3,6 +3,8 @@ CHANGELOG Unknown Horizons
 
 | Release | Current savegame revision |
 |---|---|
+| 2026.2.1 | 77 |
+| 2026.2 | 77 |
 | 2026.1 | 77 |
 | 2019.1 | 77 |
 | 2017.2 | 76 |
@@ -19,6 +21,31 @@ CHANGELOG Unknown Horizons
 | 2011.1a | 12 |
 | 2011.1 | 12 |
 | 2010.1 | 8 |
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+2026-09-28: Milestone 2026.2.1
+----------------------------
+changelog date: 28th Sep 2026
+
+### Codebase
+
+Multiplayer desync detection hardened (detection and forensics, not a
+root-cause fix for all desyncs):
+
+ - get_checkup_hash now covers ground units (worldid, owner, position,
+   health), ship health, and per-island building counts by type, in
+   addition to the existing settlements/ships/RNG coverage. Divergence
+   from army movement, construction, and combat damage is now caught
+   instead of going silently wrong. Lists are sorted by worldid for
+   stable ordering; floats are rounded to 4 decimals to avoid false
+   positives from representation differences.
+ - When divergence is detected, the game now writes a desync diagnostic
+   report to the log dir containing every player's full checkup hash at
+   the diverged tick, and the out-of-sync popup tells the player where
+   the report was saved.
+ - init_fish_indexer now passes the session RNG to BuildingIndexer
+   (previously None, a latent crash/divergence risk); BuildingIndexer
+   now fails fast with a clear error if constructed without an RNG.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 2026-XX-XX: Milestone 2026.1
