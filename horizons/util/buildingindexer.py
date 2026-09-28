@@ -131,6 +131,9 @@ class BuildingIndex:
 	"""
 
 	def __init__(self, coords, random):
+		if random is None:
+			raise ValueError("BuildingIndex requires an RNG (use the session RNG); "
+			                 "passing None breaks multiplayer determinism")
 		self._coords = coords
 		self._random = random
 		self._add_set = set()

@@ -392,7 +392,7 @@ class World(BuildingOwner, WorldObject):
 	def init_fish_indexer(self):
 		radius = Entities.buildings[BUILDINGS.FISHER].radius
 		buildings = self.provider_buildings.provider_by_resources[RES.FISH]
-		self.fish_indexer = BuildingIndexer(radius, self.full_map, buildings=buildings)
+		self.fish_indexer = BuildingIndexer(radius, self.full_map, self.session.random, buildings=buildings)
 
 	def init_new_world(self, trader_enabled, pirate_enabled, natural_resource_multiplier):
 		"""
@@ -673,12 +673,16 @@ class World(BuildingOwner, WorldObject):
 	def get_checkup_hash(self):
 		"""Returns a collection of important game state values. Used to check if two mp games have diverged.
 		Not designed to be reliable."""
-		# NOTE: don't include float values, they are represented differently in python 2.6 and 2.7
-		# and will differ at some insignificant place. Also make sure to handle them correctly in the game logic.
+		# NOTE: float values are rounded to 4 decimals before being stringified, so that
+		# insignificant representation differences don't trigger false positives.
+		def fnum(value):
+			return str(round(float(value), 4))
 		data = {
 			'rngvalue': self.session.random.random(),
 			'settlements': [],
 			'ships': [],
+			'ground_units': [],
+			'buildings': [],
 		}
 		for island in self.islands:
 			# dicts usually aren't hashable, this makes them
@@ -695,12 +699,29 @@ class World(BuildingOwner, WorldObject):
 					'inventory': str(dict_hash(storage_dict))
 				}
 				data['settlements'].append(entry)
-		for ship in self.ships:
+			# building counts per type catch construction/destruction divergence cheaply
+			building_counts = {}
+			for building in island.buildings:
+				building_counts[building.__class__.id] = building_counts.get(building.__class__.id, 0) + 1
+			data['buildings'].append(str(sorted(building_counts.items())))
+		for ship in sorted(self.ships, key=lambda s: s.worldid):
 			entry = {
+				'worldid': str(ship.worldid),
 				'owner': str(ship.owner.worldid),
 				'position': ship.position.to_tuple(),
 			}
+			if ship.has_component(HealthComponent):
+				entry['health'] = fnum(ship.get_component(HealthComponent).health)
 			data['ships'].append(entry)
+		for unit in sorted(self.ground_units, key=lambda u: u.worldid):
+			entry = {
+				'worldid': str(unit.worldid),
+				'owner': str(unit.owner.worldid),
+				'position': unit.position.to_tuple(),
+			}
+			if unit.has_component(HealthComponent):
+				entry['health'] = fnum(unit.get_component(HealthComponent).health)
+			data['ground_units'].append(entry)
 		return data
 
 	def toggle_owner_highlight(self):

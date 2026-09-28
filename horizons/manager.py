@@ -22,8 +22,11 @@
 import itertools
 import logging
 import operator
+import os
+import time
 
 from horizons.command.building import Build
+from horizons.constants import PATHS
 from horizons.i18n import gettext as T
 from horizons.network import CommandError, packets
 from horizons.scheduler import Scheduler
@@ -171,14 +174,48 @@ class MPManager(LivingObject):
 
 	def hash_value_check(self, tick):
 		if tick % self.HASH_EVAL_DISTANCE == 0:
+			# grab the packets before are_checkup_hash_values_equal consumes them,
+			# so the desync report can include the full per-player hashes
+			pkges = self.checkuphashmanager.get_packets_for_tick(tick, remove_returned_commands=False)
 			if not self.checkuphashmanager.are_checkup_hash_values_equal(tick, self.hash_value_diff):
 				self.log.error("MPManager: Hash values generated in tick %s are not equal",
 							   str(tick - self.HASHDELAY))
 				# if this is reached, we are screwed. Something went wrong in the simulation,
 				# but we don't know what. Stop the game.
+				report_path = self.write_desync_report(tick, pkges)
 				msg = T("The games have run out of sync. This indicates an unknown internal error, the game cannot continue.") + "\n" + \
 				  T("We are very sorry and hope to have this bug fixed in a future version.")
+				if report_path:
+					msg += "\n" + T("A diagnostic report was saved to {path}. Please send it to the developers.").format(path=report_path)
 				self.session.ingame_gui.open_error_popup('Out of sync', msg)
+
+	def write_desync_report(self, tick, pkges):
+		"""Write a desync diagnostic report to the log dir: the full checkup hashes
+		from every player at the diverged tick, so the cause can be analyzed later.
+		@param pkges: CheckupHashPackets for the diverged tick
+		@return: path of the written report, or None on failure"""
+		try:
+			if not os.path.isdir(PATHS.LOG_DIR):
+				os.makedirs(PATHS.LOG_DIR)
+			filename = "desync-report-tick{}-{}.txt".format(tick, time.strftime("%Y%m%d-%H%M%S"))
+			path = os.path.join(PATHS.LOG_DIR, filename)
+			localplayerid = self.session.world.player.worldid
+			with open(path, "w") as f:
+				f.write("Unknown Horizons desync report\n")
+				f.write("tick: {} (hash evaluated for tick {})\n".format(tick, tick - self.HASHDELAY))
+				f.write("generated: {}\n".format(time.strftime("%Y-%m-%d %H:%M:%S")))
+				f.write("players in game: {}\n\n".format(self.get_player_count()))
+				for pkg in pkges:
+					who = "local" if pkg.player_id == localplayerid else "player {}".format(pkg.player_id)
+					f.write("=== checkup hash from {} (tick {}) ===\n".format(who, pkg.tick))
+					f.write(repr(pkg.checkup_hash))
+					f.write("\n\n")
+				f.write("Command history for this session is in the mpmanager.commands log.\n")
+			self.log.error("MPManager: desync report written to %s", path)
+			return path
+		except Exception:
+			self.log.exception("MPManager: failed to write desync report")
+			return None
 
 	def hash_value_diff(self, player1, hash1, player2, hash2):
 		"""Called when a divergence has been detected"""
